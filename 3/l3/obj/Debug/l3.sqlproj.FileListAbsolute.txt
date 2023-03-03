@@ -1,0 +1,8 @@
+D:\универ\БД\лабы\3\l3\bin\Debug\l3.dacpac
+D:\универ\БД\лабы\3\l3\bin\Debug\l3.dll
+D:\универ\БД\лабы\3\l3\bin\Debug\l3.pdb
+D:\универ\БД\лабы\3\l3\obj\Debug\l3.sqlproj.AssemblyReference.cache
+D:\универ\БД\лабы\3\l3\obj\Debug\l3.dll
+D:\универ\БД\лабы\3\l3\obj\Debug\l3.pdb
+D:\универ\БД\лабы\3\l3\bin\Debug\l3.dll.config
+D:\универ\БД\лабы\3\l3\obj\Debug\l3.sqlproj.CopyComplete

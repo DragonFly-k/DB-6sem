@@ -3,7 +3,7 @@ create database License_Management
 CREATE TABLE Userr (
   ID INT PRIMARY KEY IDENTITY(1,1),
   Name VARCHAR(50) NOT NULL,
-  Email VARCHAR(100) NOT NULL
+  Email VARCHAR(100) NOT NULL 
 );
 CREATE TABLE Software (
   ID INT PRIMARY KEY IDENTITY(1,1),
@@ -28,7 +28,11 @@ go
 
 CREATE NONCLUSTERED INDEX idx_User ON Userr (Name,Email);
 CREATE NONCLUSTERED INDEX idx_Software ON Software (Name,Version,Manufacturer);
-CREATE NONCLUSTERED INDEX idx_Licenses ON Licenses (Price);
+CREATE NONCLUSTERED INDEX idx_UserLicenses
+ON UserLicenses (UserID, StartDate, EndDate)
+INCLUDE (LicenseID, LicenseKey);
+CREATE INDEX idx_FilteredLicense
+ON Licenses (SoftwareID) WHERE Price > 1000;
 go
 
 CREATE VIEW ActiveUserLicenses AS
@@ -78,30 +82,54 @@ BEGIN
 INSERT INTO Licenses(SoftwareID, Price) VALUES (@SoftwareID, @Price)
 END;
 go
-CREATE PROCEDURE AddUserLicenses (@UserID INT, @LicenseID INT, @LicenseKey VARCHAR(50), @StartDate DATE, @EndDate DATE)
+CREATE OR ALTER PROCEDURE AddUserLicenses (@UserID INT, @LicenseID INT, @LicenseKey VARCHAR(50), @StartDate DATE, @EndDate DATE)
 AS
 BEGIN
-INSERT INTO UserLicenses(UserID, LicenseID, LicenseKey, StartDate, EndDate)
-VALUES (@UserID, @LicenseID, @LicenseKey, @StartDate, @EndDate)
+    IF EXISTS (
+        SELECT * FROM UserLicenses 
+		WHERE UserID = @UserID AND LicenseID = @LicenseID AND EndDate > GETDATE())
+    BEGIN
+        RAISERROR('Cannot add a license for the same software until the current license expires.', 16, 1);
+        RETURN;
+    END;
+    
+    INSERT INTO UserLicenses(UserID, LicenseID, LicenseKey, StartDate, EndDate)
+    VALUES (@UserID, @LicenseID, @LicenseKey, @StartDate, @EndDate);
+END;
+
+go
+CREATE PROCEDURE GetLicensesToUpdateNextMonth
+AS
+BEGIN
+SELECT UserLicenses.LicenseKey,UserLicenses.StartDate,UserLicenses.EndDate,Licenses.Price,
+Software.Name AS SoftwareName,Userr.Name AS UserName
+FROM UserLicenses 
+INNER JOIN Licenses ON UserLicenses.LicenseID = Licenses.ID
+INNER JOIN Software ON Licenses.SoftwareID = Software.ID
+INNER JOIN Userr ON UserLicenses.UserID = Userr.ID
+WHERE MONTH(UserLicenses.EndDate) = MONTH(DATEADD(MONTH, 1, GETDATE())) 
+AND YEAR(UserLicenses.EndDate) = YEAR(DATEADD(MONTH, 1, GETDATE()))
 END;
 go
-EXEC AddUser @Name = 'dfkkd', @Email = 'jfdkld';
-EXEC AddUser @Name = 'Kate', @Email = 'dkkff';
-EXEC AddUser @Name = 'qrewdfks', @Email = 'dkfl';
+EXEC GetLicensesToUpdateNextMonth;
+EXEC AddUser @Name = '1', @Email = '1';
+EXEC AddUser @Name = '2', @Email = '2';
+EXEC AddUser @Name = '3', @Email = '3';
 
-EXEC AddSoftware @Name='java', @Version='5sd5', @Manufacturer='kjds';
-EXEC AddSoftware @Name='node', @Version='855', @Manufacturer='kjdfskd';
-EXEC AddSoftware @Name='python', @Version='266', @Manufacturer='fsn';
+EXEC AddSoftware @Name='1', @Version='1', @Manufacturer='1';
+EXEC AddSoftware @Name='2', @Version='2', @Manufacturer='2';
+EXEC AddSoftware @Name='3', @Version='3', @Manufacturer='3';
 
-EXEC AddLicenses @SoftwareID= 1, @Price=6563;
-EXEC AddLicenses @SoftwareID= 3, @Price=65;
-EXEC AddLicenses @SoftwareID= 2, @Price=855;
+EXEC AddLicenses @SoftwareID= 1, @Price=1;
+EXEC AddLicenses @SoftwareID= 2, @Price=2;
+EXEC AddLicenses @SoftwareID= 3, @Price=3;
 
 EXEC AddUserLicenses @UserID = 1, @LicenseID = 1, @LicenseKey='kfslk5s5', @StartDate='2017-07-12', @EndDate ='2025-07-12';
-EXEC AddUserLicenses @UserID = 2, @LicenseID = 3, @LicenseKey='slgf5dsf', @StartDate='2012-07-12', @EndDate ='2025-07-12';
-EXEC AddUserLicenses @UserID = 3, @LicenseID = 2, @LicenseKey='dkflg8sd5', @StartDate='2017-07-12', @EndDate ='2018-07-12';
-
+EXEC AddUserLicenses @UserID = 2, @LicenseID = 2, @LicenseKey='slgf5dsf', @StartDate='2012-07-12', @EndDate ='2023-03-12';
+EXEC AddUserLicenses @UserID = 3, @LicenseID = 3, @LicenseKey='dkflg8sd', @StartDate='2020-07-12', @EndDate ='2023-07-12';
+EXEC AddUserLicenses @UserID = 1, @LicenseID = 3, @LicenseKey='dkflg8sd', @StartDate='2020-07-12', @EndDate ='2023-03-12';
 go
+
 
 CREATE FUNCTION count_user_licenses (@user_id INT) RETURNS INT
 AS
@@ -168,6 +196,9 @@ go
 
 select * from UserLog
 select * from Userr
+select * from UserLicenses
 INSERT INTO Userr(Name, Email)VALUES ('trigger', 'tr')
 UPDATE Userr SET Email='new' WHERE Name='trigger'
 DELETE Userr WHERE Name='trigger'
+
+delete UserLicenses WHERE id =4
