@@ -64,9 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SqlStoredProcedure1.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
+    <Compile Include="SqlUserDefinedType1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="bin\Debug\l3.dacpac">

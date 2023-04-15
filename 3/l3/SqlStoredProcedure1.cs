@@ -23,20 +23,26 @@ public partial class StoredProcedures
     }
 
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void ReadTextFile(string path)
+
+    public static void ReadExternalData(SqlString filePath)
     {
-        string result = "";
-        try
-        {
-            using (StreamReader sr = new StreamReader(path))
+            string sql = $@"BULK INSERT Userr FROM '{filePath}'
+                WITH (
+                  FIELDTERMINATOR = ',',
+                  ROWTERMINATOR = '\n',
+                  FIRSTROW = 2
+                );
+
+                SELECT * FROM Userr;";
+
+            using (SqlConnection connection = new SqlConnection("Context Connection=true"))
             {
-                result = sr.ReadToEnd();
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    SqlContext.Pipe.ExecuteAndSend(command);
+                    connection.Close();
+                }
             }
-            SqlContext.Pipe.Send(result);
-        }
-        catch (Exception ex)
-        {
-            SqlContext.Pipe.Send("Error: " + ex.Message);
-        }
     }
 }

@@ -1,9 +1,13 @@
 create database License_Management
+--drop database License_Management
+
+delete from Software
+ALTER TABLE Userr ADD location geography;
 
 CREATE TABLE Userr (
   ID INT PRIMARY KEY IDENTITY(1,1),
   Name VARCHAR(50) NOT NULL,
-  Email VARCHAR(100) NOT NULL 
+  Email VARCHAR(100) NOT NULL,
 );
 CREATE TABLE Software (
   ID INT PRIMARY KEY IDENTITY(1,1),
@@ -64,10 +68,10 @@ select * from ExpiredUserLicenses;
 select * from vw_UserLicenses;
 go
 
-CREATE PROCEDURE AddUser (@Name VARCHAR(50), @Email VARCHAR(100))
+CREATE or alter PROCEDURE AddUser (@Name VARCHAR(50), @Email VARCHAR(100), @location VARCHAR(max))
 AS
 BEGIN
-INSERT INTO Userr(Name, Email)VALUES (@Name, @Email)
+INSERT INTO Userr(Name, Email, location)VALUES (@Name, @Email,'geography::STPointFromText('@location', 4326);')
 END;
 go
 CREATE PROCEDURE AddSoftware (@Name VARCHAR(50), @Version VARCHAR(20), @Manufacturer VARCHAR(50))
@@ -112,13 +116,27 @@ AND YEAR(UserLicenses.EndDate) = YEAR(DATEADD(MONTH, 1, GETDATE()))
 END;
 go
 EXEC GetLicensesToUpdateNextMonth;
-EXEC AddUser @Name = '1', @Email = '1';
-EXEC AddUser @Name = '2', @Email = '2';
-EXEC AddUser @Name = '3', @Email = '3';
+delete userr
+delete Software
+delete Licenses
+delete UserLicenses
 
-EXEC AddSoftware @Name='1', @Version='1', @Manufacturer='1';
-EXEC AddSoftware @Name='2', @Version='2', @Manufacturer='2';
-EXEC AddSoftware @Name='3', @Version='3', @Manufacturer='3';
+INSERT INTO Userr (name, email, location) 
+  VALUES(1,1,geography::STGeomFromText('POINT(55.9271035250276 -3.29431266523898)',4326))
+  INSERT INTO Userr (name, email, location) 
+  VALUES(4,4,geography::STGeomFromText('POINT(55.9271035250276 -3.29431266523898)',4326))
+INSERT INTO Userr (name, email, location) 
+  VALUES(2,2,geography::STGeomFromText('POINT(54.9271035250276 -3.29431266523898)',4326))
+INSERT INTO Userr (name, email, location) 
+  VALUES(3,3,geography::STGeomFromText('POINT(56.9271035250276 -3.29431266523898)',4326))
+
+EXEC AddUser @Name = '1', @Email = '1',@location= 'POINT(52.3833 30.4061)';
+EXEC AddUser @Name = '2', @Email = '2',@location= 'POINT(54.3833 30.4061)';
+EXEC AddUser @Name = '3', @Email = '3',@location= 'POINT(56.3833 30.4061)';
+
+EXEC AddSoftware @Name='4', @Version='4', @Manufacturer='1';
+EXEC AddSoftware @Name='2', @Version='5', @Manufacturer='2';
+EXEC AddSoftware @Name='3', @Version='7', @Manufacturer='3';
 
 EXEC AddLicenses @SoftwareID= 1, @Price=1;
 EXEC AddLicenses @SoftwareID= 2, @Price=2;
@@ -128,6 +146,7 @@ EXEC AddUserLicenses @UserID = 1, @LicenseID = 1, @LicenseKey='kfslk5s5', @Start
 EXEC AddUserLicenses @UserID = 2, @LicenseID = 2, @LicenseKey='slgf5dsf', @StartDate='2012-07-12', @EndDate ='2023-03-12';
 EXEC AddUserLicenses @UserID = 3, @LicenseID = 3, @LicenseKey='dkflg8sd', @StartDate='2020-07-12', @EndDate ='2023-07-12';
 EXEC AddUserLicenses @UserID = 1, @LicenseID = 3, @LicenseKey='dkflg8sd', @StartDate='2020-07-12', @EndDate ='2023-03-12';
+EXEC AddUserLicenses @UserID = 1, @LicenseID = 2, @LicenseKey='dkflg8sd', @StartDate='2023-03-01', @EndDate ='2023-03-12';
 go
 
 

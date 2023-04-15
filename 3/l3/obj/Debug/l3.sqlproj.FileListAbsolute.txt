@@ -4,5 +4,8 @@ D:\универ\БД\лабы\3\l3\bin\Debug\l3.pdb
 D:\универ\БД\лабы\3\l3\obj\Debug\l3.sqlproj.AssemblyReference.cache
 D:\универ\БД\лабы\3\l3\obj\Debug\l3.dll
 D:\универ\БД\лабы\3\l3\obj\Debug\l3.pdb
-D:\универ\БД\лабы\3\l3\bin\Debug\l3.dll.config
 D:\универ\БД\лабы\3\l3\obj\Debug\l3.sqlproj.CopyComplete
+D:\универ\БД\лабы\3\l3\obj\Debug\Model.xml
+D:\универ\БД\лабы\3\l3\obj\Debug\refactor.xml
+D:\универ\БД\лабы\3\l3\obj\Debug\postdeploy.sql
+D:\универ\БД\лабы\3\l3\obj\Debug\predeploy.sql

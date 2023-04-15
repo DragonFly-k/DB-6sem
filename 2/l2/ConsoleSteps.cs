@@ -12,7 +12,7 @@ namespace l2
     }
     public enum ModelCrud
     {
-        Read, Create, Update, Delete, Proc
+        Read, Create, Update, Delete, Proc, Intersect,Difference,Union, Distance
     }
     class ConsoleSteps
     {
@@ -37,7 +37,7 @@ namespace l2
             Console.WriteLine($"{(int)Model.Users} - Users\n" +
                               $"{(int)Model.Softwares} - Softwares\n" +
                               $"{(int)Model.Licenses} - Licenses\n" +
-                              $"{(int)Model.UserLicenses} - UserLicenses\n"+
+                              $"{(int)Model.UserLicenses} - UserLicenses\n" +
                               $"{(int)Model.UserLicenses} - Procedure\n");
             return ReadCommand();
         }
@@ -90,6 +90,31 @@ namespace l2
                 string[] inputParams = InputParamas();
                 obj.Delete(int.Parse(inputParams[0]));
             }
+            else if (modelCrud == ModelCrud.Intersect)
+            {
+                Console.WriteLine("ID_1/ID_2");
+                string[] inputParams = InputParamas();
+                obj.Intersect(int.Parse(inputParams[0]), int.Parse(inputParams[1]));
+            }
+            else if (modelCrud == ModelCrud.Difference)
+            {
+                Console.WriteLine("ID_1/ID_2");
+                string[] inputParams = InputParamas();
+                obj.Difference(int.Parse(inputParams[0]), int.Parse(inputParams[1]));
+            }
+            else if (modelCrud == ModelCrud.Union)
+            {
+                Console.WriteLine("ID_1/ID_2");
+                string[] inputParams = InputParamas();
+                obj.Union(int.Parse(inputParams[0]), int.Parse(inputParams[1]));
+            }
+            else if (modelCrud == ModelCrud.Distance)
+            {
+                Console.WriteLine("ID_1/ID_2");
+                string[] inputParams = InputParamas();
+                obj.Distance(int.Parse(inputParams[0]), int.Parse(inputParams[1]));
+            }
+
         }
         public void SoftwaresCrud(ModelCrud modelCrud, Softwares obj)
         {
@@ -113,6 +138,11 @@ namespace l2
             {
                 string[] inputParams = InputParamas();
                 obj.Delete(int.Parse(inputParams[0]));
+            }
+            else if(modelCrud == ModelCrud.Intersect || modelCrud == ModelCrud.Difference|| modelCrud == ModelCrud.Union || modelCrud == ModelCrud.Distance)
+            {
+                Console.WriteLine("Not supported");
+                CrudCommand();
             }
         }
         public void LicensesCrud(ModelCrud modelCrud, Licenses obj)
@@ -138,6 +168,11 @@ namespace l2
                 string[] inputParams = InputParamas();
                 obj.Delete(int.Parse(inputParams[0]));
             }
+            else if (modelCrud == ModelCrud.Intersect || modelCrud == ModelCrud.Difference || modelCrud == ModelCrud.Union || modelCrud == ModelCrud.Distance)
+            {
+                Console.WriteLine("Not supported");
+                CrudCommand();
+            }
         }
         public void UserLicensesCrud(ModelCrud modelCrud, UserLicenses obj)
         {
@@ -162,9 +197,10 @@ namespace l2
                 string[] inputParams = InputParamas();
                 obj.Delete(int.Parse(inputParams[0]));
             }
-            else if (modelCrud == ModelCrud.Proc)
+            else if (modelCrud == ModelCrud.Intersect || modelCrud == ModelCrud.Difference || modelCrud == ModelCrud.Union || modelCrud == ModelCrud.Distance)
             {
-                obj.Procedure();
+                Console.WriteLine("Not supported");
+                CrudCommand();
             }
         }
         public string CrudCommand()
@@ -173,7 +209,11 @@ namespace l2
                               $"{(int)ModelCrud.Create} - Create\n" +
                               $"{(int)ModelCrud.Update} - Update\n" +
                               $"{(int)ModelCrud.Delete} - Delete\n" +
-                              $"{(int)ModelCrud.Proc} - Procedure\n");
+                              $"{(int)ModelCrud.Proc} - Procedure\n"+
+                              $"{(int)ModelCrud.Intersect} - Intersect\n" +
+                              $"{(int)ModelCrud.Difference} - Difference\n" +
+                              $"{(int)ModelCrud.Union} - Union\n" +
+                              $"{(int)ModelCrud.Distance} - Distance\n");
             return ReadCommand();
         }
         private string ReadCommand()
