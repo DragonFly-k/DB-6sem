@@ -1,9 +1,9 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oracle.ManagedDataAccess.Client;
 
 namespace l2
 {
@@ -13,7 +13,7 @@ namespace l2
         public override void Delete(int id)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand($"delete from Licenses where id = {id}", _db.Connection);
+            OracleCommand command = new OracleCommand($"delete from Licenses where id = {id}", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -24,8 +24,8 @@ namespace l2
         public override void GetAll()
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand("select * from Licenses order by id", _db.Connection);
-            SqlDataReader reader = command.ExecuteReader();
+            OracleCommand command = new OracleCommand("select * from Licenses order by id", _db.Connection);
+            OracleDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 Console.WriteLine($"{reader.GetName(0)} {reader.GetName(1)}\t{reader.GetName(2)}");
@@ -42,7 +42,7 @@ namespace l2
         public void Insert(int SoftwareID, int Price)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand($"insert into Licenses (SoftwareID, Price) values ({SoftwareID}, {Price})", _db.Connection);
+            OracleCommand command = new OracleCommand($"insert into Licenses (SoftwareID, Price) values ({SoftwareID}, {Price})", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -53,7 +53,7 @@ namespace l2
         public void Update(int id, int price)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand($"update Licenses set Price = {price} where id = {id}", _db.Connection);
+            OracleCommand command = new OracleCommand($"update Licenses set Price = {price} where id = {id}", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 

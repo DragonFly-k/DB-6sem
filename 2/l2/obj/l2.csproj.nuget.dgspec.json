@@ -47,6 +47,10 @@
             "Microsoft.SqlServer.Types": {
               "target": "Package",
               "version": "[160.1000.6, )"
+            },
+            "Oracle.ManagedDataAccess": {
+              "target": "Package",
+              "version": "[21.10.0, )"
             }
           },
           "imports": [

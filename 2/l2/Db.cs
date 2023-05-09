@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,15 +11,15 @@ namespace l2
     class Db
     {
         private string connection_string;
-        private SqlConnection connection;
-        public SqlConnection Connection
+        private OracleConnection connection;
+        public OracleConnection Connection
         {
             get { return connection; }
         }
         public Db(string connection_string)
         {
             this.connection_string = connection_string;
-            this.connection = new SqlConnection(connection_string);
+            this.connection = new OracleConnection(connection_string);
         }
         public bool openConnection()
         {
@@ -29,7 +29,7 @@ namespace l2
                     connection.Open();
                 return true;
             }
-            catch (SqlException ex)
+            catch (OracleException ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;

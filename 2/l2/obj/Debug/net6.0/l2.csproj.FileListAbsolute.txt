@@ -61,3 +61,5 @@ D:\универ\БД\лабы\2\l2\bin\Debug\net6.0\zh-Hans\Microsoft.SqlServer.
 D:\универ\БД\лабы\2\l2\bin\Debug\net6.0\zh-Hant\Microsoft.SqlServer.Types.resources.dll
 D:\универ\БД\лабы\2\l2\bin\Debug\net6.0\runtimes\win-x64\native\SqlServerSpatial160.dll
 D:\универ\БД\лабы\2\l2\bin\Debug\net6.0\runtimes\win-x86\native\SqlServerSpatial160.dll
+D:\универ\БД\лабы\2\l2\bin\Debug\net6.0\Oracle.ManagedDataAccess.dll
+D:\универ\БД\лабы\2\l2\bin\Debug\net6.0\System.Text.Json.dll

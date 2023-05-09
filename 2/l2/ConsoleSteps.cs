@@ -16,20 +16,21 @@ namespace l2
     }
     class ConsoleSteps
     {
-        public void Interaction(Db db)
+        public void Interaction()
         {
             try
             {
                 string model = "", crudCommad = "";
+                
                 model = ChooseModel();
                 crudCommad = CrudCommand();
-                Perfom(model, crudCommad, db);
-                Interaction(db);
+                Perfom(model, crudCommad);
+                Interaction();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Произошла ошибка: " + ex + "\n");
-                Interaction(db);
+                Interaction();
             }
         }
         public string ChooseModel()
@@ -37,34 +38,33 @@ namespace l2
             Console.WriteLine($"{(int)Model.Users} - Users\n" +
                               $"{(int)Model.Softwares} - Softwares\n" +
                               $"{(int)Model.Licenses} - Licenses\n" +
-                              $"{(int)Model.UserLicenses} - UserLicenses\n" +
-                              $"{(int)Model.UserLicenses} - Procedure\n");
+                              $"{(int)Model.UserLicenses} - UserLicenses\n");
             return ReadCommand();
         }
-        public void Perfom(string model, string crudCommand, Db db)
+        public void Perfom(string model, string crudCommand)
         {
             Model enumModel = (Model)int.Parse(model);
             ModelCrud enumCrud = (ModelCrud)int.Parse(crudCommand);
 
             if (enumModel == Model.Users)
             {
-                Users obj = new Users(db);
-                UsersCrud(enumCrud, obj);
+                //Users obj = new Users();
+                //UsersCrud(enumCrud, obj);
             }
             else if (enumModel == Model.Softwares)
             {
-                Softwares obj = new Softwares(db);
+                Softwares obj = new Softwares("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=xe)));Password=mig;User Id=mig;");
                 SoftwaresCrud(enumCrud, obj);
             }
             else if (enumModel == Model.Licenses)
             {
-                Licenses obj = new Licenses(db);
-                LicensesCrud(enumCrud, obj);
+                //Licenses obj = new Licenses();
+                //LicensesCrud(enumCrud, obj);
             }
             else if (enumModel == Model.UserLicenses)
             {
-                UserLicenses obj = new UserLicenses(db);
-                UserLicensesCrud(enumCrud, obj);
+                //UserLicenses obj = new UserLicenses();
+                //UserLicensesCrud(enumCrud, obj);
             }
         }
         public void UsersCrud(ModelCrud modelCrud, Users obj)
@@ -208,12 +208,7 @@ namespace l2
             Console.WriteLine($"{(int)ModelCrud.Read} - Read\n" +
                               $"{(int)ModelCrud.Create} - Create\n" +
                               $"{(int)ModelCrud.Update} - Update\n" +
-                              $"{(int)ModelCrud.Delete} - Delete\n" +
-                              $"{(int)ModelCrud.Proc} - Procedure\n"+
-                              $"{(int)ModelCrud.Intersect} - Intersect\n" +
-                              $"{(int)ModelCrud.Difference} - Difference\n" +
-                              $"{(int)ModelCrud.Union} - Union\n" +
-                              $"{(int)ModelCrud.Distance} - Distance\n");
+                              $"{(int)ModelCrud.Delete} - Delete\n" );
             return ReadCommand();
         }
         private string ReadCommand()

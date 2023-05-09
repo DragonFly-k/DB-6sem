@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace l2
         public override void Delete(int id)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand($"delete from Userr where id = {id}", _db.Connection);
+            OracleCommand command = new OracleCommand($"delete from Userr where id = {id}", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -25,8 +25,8 @@ namespace l2
         public override void GetAll()
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand("select * from Userr order by id", _db.Connection);
-            SqlDataReader reader = command.ExecuteReader();
+            OracleCommand command = new OracleCommand("select * from Userr order by id", _db.Connection);
+            OracleDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 Console.WriteLine($"{reader.GetName(0)}\t{reader.GetName(1)}\t\t{reader.GetName(2)}\t\t{reader.GetName(3)}");
@@ -42,7 +42,7 @@ namespace l2
         public void Insert(string name, string email)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand($"insert into Userr(Name,Email) values ('{name}','{email}')", _db.Connection);
+            OracleCommand command = new OracleCommand($"insert into Userr(Name,Email) values ('{name}','{email}')", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -54,7 +54,7 @@ namespace l2
         public void Update(int id, string name)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand($"update Userr set Name = '{name}' where id = {id}", _db.Connection);
+            OracleCommand command = new OracleCommand($"update Userr set Name = '{name}' where id = {id}", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -65,14 +65,14 @@ namespace l2
         public void Intersect(int userId1, int userId2)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand("begin " +
+            OracleCommand command = new OracleCommand("begin " +
                 "declare @a geography " +
                 "declare @b geography " +
                 $"set @a = (select location from Userr where id = {userId1}) " +
                 $"set @b = (select location from Userr where id = {userId2}) " +
                 "select @a.STIntersection(@b)" +
                 " end; ", _db.Connection);
-            SqlDataReader reader = command.ExecuteReader();
+            OracleDataReader reader = command.ExecuteReader();
             if (reader.Read())
             {
                 if (!reader.IsDBNull(0))
@@ -91,14 +91,14 @@ namespace l2
         public void Difference(int userId1, int userId2)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand("begin " +
+            OracleCommand command = new OracleCommand("begin " +
                 "declare @a geography " +
                 "declare @b geography " +
                 $"set @a = (select location from Userr where id = {userId1}) " +
                 $"set @b = (select location from Userr where id = {userId2}) " +
                 "select @a.STDifference(@b)" +
                 " end; ", _db.Connection);
-            SqlDataReader reader = command.ExecuteReader();
+            OracleDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -112,15 +112,15 @@ namespace l2
         }
         public void Union(int userId1, int userId2)
         {
-            _db.openConnection(); 
-            SqlCommand command = new SqlCommand("begin " +
+            _db.openConnection();
+            OracleCommand command = new OracleCommand("begin " +
                  "declare @a geography " +
                  "declare @b geography " +
                  $"set @a = (select location from Userr where id = {userId1}) " +
                  $"set @b = (select location from Userr where id = {userId2}) " +
                  "select @a.STUnion(@b)" +
                  " end; ", _db.Connection);
-            SqlDataReader reader = command.ExecuteReader();
+            OracleDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -135,14 +135,14 @@ namespace l2
         public void Distance(int userId1, int userId2)
         {
             _db.openConnection();
-            SqlCommand command = new SqlCommand("begin " +
+            OracleCommand command = new OracleCommand("begin " +
                 "declare @a geography " +
                 "declare @b geography " +
                 $"set @a = (select location from Userr where id = {userId1}) " +
                 $"set @b = (select location from Userr where id = {userId2}) " +
                 "select @a.STDistance(@b) " +
                 " end; ", _db.Connection);
-            SqlDataReader reader = command.ExecuteReader();
+            OracleDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 while (reader.Read())
