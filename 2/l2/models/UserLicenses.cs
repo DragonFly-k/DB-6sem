@@ -1,4 +1,4 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace l2
         public override void Delete(int id)
         {
             _db.openConnection();
-            OracleCommand command = new OracleCommand($"delete from UserLicenses where id = {id}", _db.Connection);
+            SqlCommand command = new SqlCommand($"delete from UserLicenses where id = {id}", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -24,8 +24,8 @@ namespace l2
         public override void GetAll()
         {
             _db.openConnection();
-            OracleCommand command = new OracleCommand("select * from UserLicenses order by id", _db.Connection);
-            OracleDataReader reader = command.ExecuteReader();
+            SqlCommand command = new SqlCommand("select * from UserLicenses order by id", _db.Connection);
+            SqlDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 Console.WriteLine($"{reader.GetName(0)} {reader.GetName(1)} {reader.GetName(2)}" +
@@ -43,7 +43,7 @@ namespace l2
         public void Insert(int UserID, int LicenseID, string LicenseKey, string StartDate, string EndDate)
         {
             _db.openConnection();
-            OracleCommand command = new OracleCommand($"insert into UserLicenses(UserID, LicenseID, LicenseKey, StartDate, EndDate)" +
+            SqlCommand command = new SqlCommand($"insert into UserLicenses(UserID, LicenseID, LicenseKey, StartDate, EndDate)" +
                                $"values ({UserID}, {LicenseID}, '{LicenseKey}', '{StartDate}', '{EndDate}')", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
@@ -55,7 +55,7 @@ namespace l2
         public void Update(int id, string EndDate)
         {
             _db.openConnection();
-            OracleCommand command = new OracleCommand($"update UserLicenses set EndDate = '{EndDate}' where id = {id}", _db.Connection);
+            SqlCommand command = new SqlCommand($"update UserLicenses set EndDate = '{EndDate}' where id = {id}", _db.Connection);
             int changedRows = command.ExecuteNonQuery();
             _db.closeConnection();
 
@@ -66,8 +66,8 @@ namespace l2
         public void Procedure()
         {
             _db.openConnection();
-            OracleCommand command = new OracleCommand($"exec GetLicensesToUpdateNextMonth", _db.Connection);
-            OracleDataReader reader = command.ExecuteReader();
+            SqlCommand command = new SqlCommand($"exec GetLicensesToUpdateNextMonth", _db.Connection);
+            SqlDataReader reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 Console.WriteLine($"{reader.GetName(0)}\t{reader.GetName(1)}\t\t{reader.GetName(2)}" +

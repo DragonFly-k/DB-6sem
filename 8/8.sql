@@ -1,8 +1,8 @@
----1
-drop tablespace blob_lab;
+---1 sys
+drop tablespace blob_lab INCLUDING CONTENTS;
 
 CREATE TABLESPACE blob_lab
-    DATAFILE 'D:\универ\БД\лабы\8\ts_lab2.dbf'
+    DATAFILE 'D:\универ\БД\лабы\8\lab.dbf'
     SIZE 1000 m
     AUTOEXTEND ON NEXT 500M
     MAXSIZE 2000M
@@ -20,33 +20,32 @@ CREATE USER lob_user IDENTIFIED BY 12345
 grant create table to lob_user; 
 grant create session, CREATE ANY DIRECTORY, DROP ANY DIRECTORY to lob_user;
 grant all privileges to lob_user;
---5
+grant read, write on directory bfile_dir to lob_user;
+grant DBA to lob_user;
+GRANT EXECUTE ON DBMS_LOB TO lob_user;
+--5 lob
 drop table blob_t;
 create table blob_t (
     id number primary key not null,
-    foto blob not null,
+    foto blob ,
     doc bfile
-    );
+);
 
+select *from  blob_t
 --6
-insert into blob_t values (3,
-utl_raw.cast_to_raw('D:\универ\учеба\Blog\frontside\src\images\1448006675_5.jpg'),
-BFILENAME( 'BFILE_DIR', '6.doc'));
-
-DECLARE
-  l_bfile BFILE;
-  l_blob  BLOB;
-BEGIN
-  l_bfile := BFILENAME('BFILE_DIR', '6.doc');
-  DBMS_LOB.FILEOPEN(l_bfile, DBMS_LOB.FILE_READONLY);
-  DBMS_LOB.CREATETEMPORARY(l_blob, TRUE);
-  DBMS_LOB.LOADFROMFILE(l_blob, l_bfile, DBMS_LOB.GETLENGTH(l_bfile));
-  DBMS_LOB.FILECLOSE(l_bfile);
-  -- do something with the blob variable, such as write it to a file
-END;
-
-  
+declare
+    fHnd bfile;
+    b blob;
+    srcOffset integer := 1;
+    dstOffset integer := 1;
+begin
+    dbms_lob.CreateTemporary( b, true );
+    fHnd := BFilename( 'ORACLE_BASE', '1.jpg' );
+    dbms_lob.FileOpen( fHnd, DBMS_LOB.FILE_READONLY );
+    dbms_lob.LoadFromFile( b, fHnd, DBMS_LOB.LOBMAXSIZE, dstOffset, srcOffset );
+    insert into blob_t values(2, b, BFILENAME( 'ORACLE_BASE', '6.doc'));
+    commit;
+    dbms_lob.FileClose( fHnd );
+end;
 --check
 select * from blob_t;
-select * from all_directories;
-update blob_t set doc = BFILENAME( 'bfile_dir', 'doc.txt') where id =3;

@@ -18,4 +18,3 @@ namespace l2
         public abstract void GetAll();
     }
 }
-

@@ -37,20 +37,19 @@ select * from Report;
 
 ------------
 create primary xml index xml_ind on Report(xml_)
-
-create xml index xml_in on Report(xml_)
-using xml index xml_ind for path
+create xml index xml_in on Report(xml_) using xml index xml_ind for path
 
 select * from Report where xml_.exist('//newName/price')=1;
 -----------
+drop procedure findXML;
 
-create procedure xml_search 
-as
-select xml_.query('//newName/price')
-	as[xml_]
-	from Report
-	for xml auto, type;
-go
+CREATE PROCEDURE findXML
+    @value NVARCHAR(50)
+AS
+BEGIN
+    SELECT * FROM Report
+    WHERE xml_.exist('/newName/*[.=sql:variable("@value")]')=1
+END
 
-execute xml_search
-
+EXECUTE findXML 'kdkd';
+EXECUTE findXML 'kd';
